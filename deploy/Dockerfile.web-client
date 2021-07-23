@@ -1,0 +1,11 @@
+FROM node:15 AS builder
+
+COPY . /srv
+WORKDIR /srv
+
+RUN npm i && npm run build
+
+FROM httpd
+
+COPY --from=builder /srv/build /usr/local/apache2/htdocs/
+COPY ./deploy/httpd.conf /usr/local/apache2/conf/httpd.conf
