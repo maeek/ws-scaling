@@ -12,7 +12,7 @@ export const createSocketWorker = (httpServer: ServerHttp, fn: (socket: Socket) 
 
   io.adapter(createAdapter(pubClient, subClient));
 
-  io.of('/socket').on('connection', (socket) => {
+  io.on('connection', (socket) => {
     fn(socket);
   });
 

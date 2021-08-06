@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { httpServer } from "src/httpServer";
+import { httpServer } from "../httpServer";
 import { createSocketWorker } from "./factory";
 
 const handleConnection = (socket: Socket) => {
@@ -10,5 +10,10 @@ const handleConnection = (socket: Socket) => {
 };
 
 export const io = createSocketWorker(httpServer, handleConnection, {
-  transports: [ 'websocket' ]
+  transports: [ 'websocket' ],
+  path: '/transport',
+  cors: {
+    origin: ['*'],
+    allowedHeaders: []
+  }
 });

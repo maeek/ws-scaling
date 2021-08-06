@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import { httpServer } from './httpServer';
+import './socket';
 
 const PORT = process.env.PORT || 8080;
 
