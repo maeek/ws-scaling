@@ -1,14 +1,18 @@
-import React from 'react';
-import { ChannelsList } from './ChannelsList';
-import { SocketProvider } from './Context';
+import React, { useState } from 'react';
+import { ChannelsList } from './components/ChannelsList';
+import { MessagesList } from './components/MessagesList';
+import { SocketProvider } from './socket';
 
 export const App = () => {
+  const [currentRoom, setCurrentRoom] = useState('');
 
   return (
     <SocketProvider>
-      <ChannelsList />
-      <ul className="messages-list"></ul>
-      <section className="input-box"></section>
+      <ChannelsList onRoomChange={(room: string) => setCurrentRoom(room)} />
+      <div>
+        <MessagesList room={currentRoom} />
+        <section className="input-box"></section>
+      </div>
     </ SocketProvider>
   );
 };

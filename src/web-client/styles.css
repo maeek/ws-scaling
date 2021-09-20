@@ -61,6 +61,10 @@ main {
   border: 0.15em solid #151515;
 }
 
+.channels-list-item--active {
+  border: 0.15em solid #043b83;
+}
+
 .timestamp {
   font-size: smaller;
   color: #aaa;
@@ -74,11 +78,8 @@ main {
   white-space: pre-line;
 }
 
-[data-active="true"] {
-  border: 0.15em dashed #75a2f5;
-}
-
 .input-box {
   height: 20%;
+  width: 100%;
   background-color: #1f1f1f;
 }
