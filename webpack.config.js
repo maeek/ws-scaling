@@ -18,22 +18,38 @@ const config = {
     modules: ["./src/web-client", "node_modules"],
     extensions: ["*", ".ts", ".js", ".jsx", ".json", ".tsx"],
   },
-  // externals: project.externals,
   module: {
     rules: [
       {
-        test: /shared-worker\.js$/,
-        use: {
-          loader: "worker-loader",
-          options: {
-            filename: "shared-worker.js",
-            worker: "SharedWorker",
+        test: /\.worker\.ts$/,
+        use: [
+          {
+            loader: "worker-loader",
+            options: {
+              worker: "SharedWorker",
+              filename: '[name].js'
+            },
           },
-        },
+          {
+            loader: "babel-loader",
+            options: {
+              cacheDirectory: true,
+              plugins: [
+                "@babel/plugin-transform-runtime",
+                "@babel/plugin-proposal-class-properties",
+              ],
+              presets: [
+                "@babel/preset-env",
+                "@babel/preset-typescript",
+                "@babel/preset-react",
+              ],
+            },
+          },
+        ],
       },
       {
         test: /\.(js|jsx|ts|tsx)$/,
-        exclude: /node_modules/,
+        exclude: /node_modules|\.worker\.ts/,
         use: [
           {
             loader: "babel-loader",
@@ -72,7 +88,6 @@ const config = {
     new CopyPlugin({
       patterns: [
         { from: "./src/web-client/styles.css", to: "./styles.css" },
-        // {from: './src/web-client/shared-worker.js', to: './shared-worker.js' }
       ],
     }),
   ],
