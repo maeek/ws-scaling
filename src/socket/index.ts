@@ -1,4 +1,5 @@
 import { Socket } from "socket.io";
+import { v4 as uuidv4 } from "uuid";
 import { SOCKET_IO_PATH } from "../config";
 import { httpServer } from "../httpServer";
 import { createSocketWorker } from "./factory";
@@ -10,16 +11,40 @@ const channelsList = [
 ]
 
 const handleConnection = (socket: Socket) => {
-  console.log('connected', socket.id);
-  socket.on('requestChannels', () => {
-    socket.emit('channelsList', { data: channelsList });
-  })
+  console.log(socket.id, 'connected');
+
+  socket.on('requestChannels', (_arg: any) => {
+    console.log(socket.id, 'requestChannels');
+    socket.emit('channelsList', channelsList);
+  });
+
+  socket.on('requestChannelJoin', (data) => {
+    console.log(socket.id, 'joined room - ', data);
+    socket.join(data.name)
+  });
+
+  socket.on('requestChannelLeave', (data) => {
+    console.log(socket.id, 'left room - ', data);
+    socket.leave(data.name)
+  });
+
+  socket.on('message', (message, callback) => {
+    const msid = uuidv4();
+    const ms = {
+      ...message,
+      id: msid
+    };
+
+    socket.to(message.room).emit(ms)
+
+    callback({
+      msid
+    })
+  });
 
   socket.on('disconnect', () => {
-    console.log('disconnected', socket.id)
+    console.log(socket.id, 'disconnected')
   })
-
-  socket.emit('channelsList', { data: channelsList });
 };
 
 export const io = createSocketWorker(httpServer, handleConnection, {
@@ -28,5 +53,6 @@ export const io = createSocketWorker(httpServer, handleConnection, {
   cors: {
     origin: ['*'],
     allowedHeaders: []
-  }
+  },
+  
 });
