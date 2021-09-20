@@ -6,7 +6,7 @@ export interface SocketContextType {
   socket: SocketService;
   connected?: boolean;
   status: WsState;
-  emit: (name: string, data?: any) => void;
+  emit: (name: string, data?: any, ack?: Function, toSelf?: boolean) => void;
 }
 
 const SocketContext = React.createContext({
@@ -15,9 +15,10 @@ const SocketContext = React.createContext({
   emit: null
 } as SocketContextType);
 
-export const SocketProvider = ({children}: any) => {
-  const [socket] = useState(new SocketService());
-  const [connected, setConnected] = useState(false);
+const socket = new SocketService();
+
+export const SocketProvider = ({ children }: any) => {
+  const [ connected, setConnected ] = useState(false);
   
   useEffect(() => {
     const listener = (ms: BChannelMessageStatus) => {
@@ -27,7 +28,7 @@ export const SocketProvider = ({children}: any) => {
   
     socket.on('status', listener);
 
-    return () => socket.off('status', listener)
+    return () => socket.off('status', listener);
   }, []);
 
   return (
@@ -36,16 +37,16 @@ export const SocketProvider = ({children}: any) => {
         socket: socket,
         connected,
         emit: socket.emit,
-        status: socket.status,
+        status: socket.status
       }}
     >
       {children}
     </SocketContext.Provider>
-  )
+  );
 };
 
 export const useSocket = () => {
-  const context = React.useContext(SocketContext)
+  const context = React.useContext(SocketContext);
   if (context === undefined) {
     throw new Error('useSocket must be used within a SocketContext');
   }

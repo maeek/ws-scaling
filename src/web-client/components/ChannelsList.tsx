@@ -7,9 +7,9 @@ export interface ChannelsListProps {
 
 export const ChannelsList = ({ onRoomChange }: ChannelsListProps) => {
   const { socket, connected, emit } = useSocket();
-  const [list, setList] = useState([]);
-  const [active, setActive] = useState('');
-  const [shouldFetch, setShouldFetch] = useState(true);
+  const [ list, setList ] = useState([]);
+  const [ active, setActive ] = useState('');
+  const [ shouldFetch, setShouldFetch ] = useState(true);
 
   useEffect(() => {
     if (!connected) {
@@ -20,28 +20,28 @@ export const ChannelsList = ({ onRoomChange }: ChannelsListProps) => {
 
     const listener = (res: any) => {
       setList(res.data.response);
-    }
+    };
 
     socket.on('channelsList', listener);
 
     return () => {
       socket.off('channelsList', listener);
     };
-  }, [socket, connected]);
+  }, [ socket, connected ]);
 
   useEffect(() => {
     if (!active && list.length > 0) {
-      setActive(list[0]);
-      onRoomChange(list[0]);
+      setActive(list[ 0 ]);
+      onRoomChange(list[ 0 ]);
     }
-  }, [active, list]);
+  }, [ active, list ]);
 
   useEffect(() => {
     if (shouldFetch && connected) {
       setShouldFetch(false);
       emit('requestChannels');
     }
-  }, [emit, shouldFetch, connected]);
+  }, [ emit, shouldFetch, connected ]);
 
   const onChannelClick = (name: string) => () => {
     setActive(name);

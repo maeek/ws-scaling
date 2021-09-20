@@ -4,14 +4,13 @@ import { MessagesList } from './components/MessagesList';
 import { SocketProvider } from './socket';
 
 export const App = () => {
-  const [currentRoom, setCurrentRoom] = useState('');
+  const [ currentRoom, setCurrentRoom ] = useState('');
 
   return (
     <SocketProvider>
       <ChannelsList onRoomChange={(room: string) => setCurrentRoom(room)} />
-      <div>
+      <div className="content-box">
         <MessagesList room={currentRoom} />
-        <section className="input-box"></section>
       </div>
     </ SocketProvider>
   );

@@ -1,14 +1,12 @@
 import io from 'socket.io-client';
 import { BROADCAST_CHANNEL, SOCKET_IO_ADDR, SOCKET_IO_PATH } from '../../config';
-import { BChannelMessageMessage, BChannelMessageStatus, BChannelMessageType, MessageTypesEnum } from './types';
-
-self.name = 'socket-worker'
+import { BChannelMessageMessage, BChannelMessageStatus, MessageTypesEnum } from './types';
 
 const ctx: SharedWorker = self as any;
 
 const socket = io(SOCKET_IO_ADDR, {
   path: SOCKET_IO_PATH,
-  transports: ['websocket']
+  transports: [ 'websocket' ]
 });
 
 const broadcastChannel = new BroadcastChannel(BROADCAST_CHANNEL);
@@ -23,7 +21,7 @@ socket.on('connect', () => {
       wsState: 'connected'
     },
     from: 'worker'
-  } as BChannelMessageStatus)
+  } as BChannelMessageStatus);
 });
 
 socket.on('disconnect', () => {
@@ -36,7 +34,7 @@ socket.on('disconnect', () => {
       wsState: 'disconnected'
     },
     from: 'worker'
-  } as BChannelMessageStatus)
+  } as BChannelMessageStatus);
 });
 
 socket.onAny((evt, response) => {
@@ -49,14 +47,19 @@ socket.onAny((evt, response) => {
       response
     },
     from: 'worker'
-  } as BChannelMessageMessage)
+  } as BChannelMessageMessage);
 });
 
-ctx.addEventListener("connect", (event: any) => {
-  const port = event.ports[0];
+const ports: MessagePort[] = [];
+
+ctx.addEventListener('connect', (event: any) => {
+  const port = event.ports[ 0 ];
+
+  ports.push(port);
 
   port.onmessage = (message: MessageEvent) => {
     console.log('EMIT - ', message.data);
+
     socket.emit(
       message.data.name,
       {
@@ -65,15 +68,32 @@ ctx.addEventListener("connect", (event: any) => {
           from: message.data.from
         }
       },
-      (ack: unknown) => {
+      (ack: any) => {
         port.postMessage({
           type: MessageTypesEnum.ACK,
           data: ack,
           ackId: message.data.ackId
-        })
+        });
+
+        if (message.data.toSelf) {
+          ports.forEach(p => {
+            p.postMessage({
+              ...message.data,
+              type: MessageTypesEnum.RELAY,
+              data: {
+                ...message.data.data,
+                response: {
+                  ...message.data.data
+                },
+                toSelf: true,
+                ...ack
+              }
+            });
+          });
+        }
       }
-    )
-  }
+    );
+  };
 
   port.postMessage({
     type: MessageTypesEnum.STATUS,
@@ -82,7 +102,7 @@ ctx.addEventListener("connect", (event: any) => {
       name: 'status',
       wsState: socket.connected ? 'connected' : 'disconnected'
     }
-  } as BChannelMessageStatus)
+  } as BChannelMessageStatus);
 });
 
 export default null as any;

@@ -8,6 +8,10 @@ html, body {
   transform: translate(0, 0, 0);
 }
 
+body * {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
 main {
   width: 100%;
   height: 100%;
@@ -26,6 +30,8 @@ main {
 .messages-list {
   flex: 1 1 80%;
   padding-top: 1em;
+  display: flex;
+  flex-direction: column;
 }
 
 .channels-list {
@@ -42,10 +48,17 @@ main {
   background-color: #151515;
   border-radius: 1.6em;
   cursor: default;
+  color: #ccc;
+  font-weight: 900;
+  align-self: flex-start;
 }
 
 .messages-list-item:first-child {
   margin-top: 0.5em;
+}
+
+.messages-list-item[data-self="true"] {
+  align-self: flex-end;
 }
 
 .channels-list-item {
@@ -79,7 +92,26 @@ main {
 }
 
 .input-box {
-  height: 20%;
+  height: auto;
   width: 100%;
   background-color: #1f1f1f;
+}
+
+.input-box textarea {
+  width: calc(100% - 1rem);
+  height: calc(150px - 1rem);
+  resize: vertical;
+  background-color: transparent;
+  color: #fff;
+  font-weight: 700;
+  border: 0;
+  margin: 0;
+  padding: 0.5rem;
+  outline-offset: -2px;
+}
+
+.content-box {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 }

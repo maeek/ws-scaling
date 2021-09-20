@@ -3,6 +3,7 @@ export enum MessageTypesEnum {
   ACK = 'ACK',
   MESSAGE = 'MESSAGE',
   STATUS = 'STATUS',
+  RELAY = 'RELAY',
 }
 
 export type WsState = 'connected' | 'disconnected' | 'reconnecting';
@@ -19,6 +20,10 @@ export interface BChannelMessageMessage extends BChannelMessage {
     name: string;
     response: Message | any;
   }
+}
+
+export interface BChannelMessageRelay extends BChannelMessage {
+  type: MessageTypesEnum.RELAY;
 }
 
 export interface Message {
