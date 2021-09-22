@@ -11,7 +11,7 @@ export const createSocketWorker = (
   const io = new Server(httpServer, options);
 
   const pubClient = createClient({
-    host: 'localhost',
+    host: 'redis',
     port: process.env.REDIS_MASTER_PORT 
       ? parseInt(process.env.REDIS_MASTER_PORT)
       : 6379

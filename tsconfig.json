@@ -16,7 +16,9 @@
     "jsx": "react"
   },
   "include": [
-    "./src/**/*",
-    "./src/web-client/**/*",
+    "./src/**/*"
+  ],
+  "exclude": [
+    "./src/web-client/**/*"
   ]
 }

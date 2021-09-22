@@ -8,6 +8,7 @@
     "start": "tsc && node ./dist/index.js",
     "serve": "webpack serve",
     "build": "rm -rf ./build && webpack",
+    "build:server": "rm -rf ./dist && tsc",
     "dev": "nodemon --watch \"src/**\" --ext \"ts,json\" --exec \"ts-node src/index.ts\"",
     "lint": "eslint --fix ."
   },

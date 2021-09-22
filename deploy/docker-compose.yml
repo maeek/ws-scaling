@@ -1,0 +1,62 @@
+version: "3.3"
+services:
+  static:
+    build:
+      context: "../"
+      dockerfile: "deploy/Dockerfile.web-client"
+    container_name: "socket-static"
+
+  redis:
+    build:
+      context: "../"
+      dockerfile: "deploy/Dockerfile.redis"
+    container_name: "redis"
+
+  haproxy:
+    build:
+      context: "../"
+      dockerfile: "deploy/Dockerfile.haproxy"
+    container_name: "haproxy"
+    ports:
+      - "80:80"
+    expose:
+      - "80"
+    networks:
+      default:
+      proxy:
+        ipv4_address: 172.21.1.1
+    cap_add:
+      - NET_ADMIN
+    links:
+      - socket-node1
+      - socket-node2
+      - socket-node3
+      - static
+
+  socket-node1:
+    build:
+      context: "../"
+      dockerfile: "deploy/Dockerfile.server"
+    container_name: "socket-node1"
+    links:
+      - redis
+
+  socket-node2:
+    build:
+      context: "../"
+      dockerfile: "deploy/Dockerfile.server"
+    container_name: "socket-node2"
+    links:
+      - redis
+
+  socket-node3:
+    build:
+      context: "../"
+      dockerfile: "deploy/Dockerfile.server"
+    container_name: "socket-node3"
+    links:
+      - redis
+
+networks:
+  proxy:
+    external: true

@@ -30,11 +30,11 @@ export const ChannelsList = ({ onRoomChange }: ChannelsListProps) => {
   }, [ socket, connected ]);
 
   useEffect(() => {
-    if (!active && list.length > 0) {
+    if (!active && list.length > 0 && onRoomChange) {
       setActive(list[ 0 ]);
       onRoomChange(list[ 0 ]);
     }
-  }, [ active, list ]);
+  }, [ active, list, onRoomChange ]);
 
   useEffect(() => {
     if (shouldFetch && connected) {

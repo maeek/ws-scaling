@@ -9,3 +9,5 @@ FROM httpd
 
 COPY --from=builder /srv/build /usr/local/apache2/htdocs/
 COPY ./deploy/httpd.conf /usr/local/apache2/conf/httpd.conf
+
+EXPOSE 80
