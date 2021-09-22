@@ -27,35 +27,24 @@ services:
         ipv4_address: 172.21.1.1
     cap_add:
       - NET_ADMIN
-    links:
-      - socket-node1
-      - socket-node2
-      - socket-node3
-      - static
 
   socket-node1:
     build:
       context: "../"
       dockerfile: "deploy/Dockerfile.server"
     container_name: "socket-node1"
-    links:
-      - redis
 
   socket-node2:
     build:
       context: "../"
       dockerfile: "deploy/Dockerfile.server"
     container_name: "socket-node2"
-    links:
-      - redis
 
   socket-node3:
     build:
       context: "../"
       dockerfile: "deploy/Dockerfile.server"
     container_name: "socket-node3"
-    links:
-      - redis
 
 networks:
   proxy:
