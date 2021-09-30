@@ -32,9 +32,10 @@ export const ChannelsList = ({ onRoomChange }: ChannelsListProps) => {
   useEffect(() => {
     if (!active && list.length > 0 && onRoomChange) {
       setActive(list[ 0 ]);
+      emit('requestChannelJoin', { name: list[ 0 ] });
       onRoomChange(list[ 0 ]);
     }
-  }, [ active, list, onRoomChange ]);
+  }, [ active, emit, list, onRoomChange ]);
 
   useEffect(() => {
     if (shouldFetch && connected) {

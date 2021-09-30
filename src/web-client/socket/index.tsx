@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SocketService } from './SocketService';
-import { BChannelMessageStatus, WsState } from './types';
+import { BChannelMessageType, WsState } from './types';
 
 export interface SocketContextType {
   socket: SocketService;
@@ -9,11 +9,7 @@ export interface SocketContextType {
   emit: (name: string, data?: any, ack?: Function, toSelf?: boolean) => void;
 }
 
-const SocketContext = React.createContext({
-  socket: null,
-  connected: false,
-  emit: null
-} as SocketContextType);
+const SocketContext = React.createContext<SocketContextType | undefined>(undefined);
 
 const socket = new SocketService();
 
@@ -21,7 +17,7 @@ export const SocketProvider = ({ children }: any) => {
   const [ connected, setConnected ] = useState(false);
   
   useEffect(() => {
-    const listener = (ms: BChannelMessageStatus) => {
+    const listener = (ms: BChannelMessageType) => {
       console.log('Socket state -', ms.data.wsState);
       setConnected(ms.data.wsState === 'connected');
     };
